@@ -15,6 +15,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      retry:
+        description: 'Auto-retry attempt number (0 = original run; the retry job bumps it)'
+        default: '0'
 
 # Least-privilege token: read the repo, write the Pages deployment, mint the OIDC token deploy-pages needs.
 permissions:
@@ -57,3 +61,27 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v5
+
+  # The Pages backend intermittently rejects a fresh deployment with "Deployment failed, try again
+  # later." (empty error, content fine) — a purely TRANSIENT fault that a FRESH run clears (this is
+  # why a manual empty commit "fixes" it). Re-running the SAME run doesn't help and re-uploads the
+  # github-pages artifact → the "Multiple artifacts named github-pages" red herring. So on failure we
+  # auto-dispatch a brand-new run (new run_id → attempt 1 → single artifact), bounded to 3 tries so a
+  # GENUINELY broken deploy stops instead of looping. workflow_dispatch via GITHUB_TOKEN is exempt
+  # from GitHub's recursion guard, so this self-trigger actually starts a new run.
+  retry:
+    needs: deploy
+    if: failure() && fromJSON(github.event.inputs.retry || '0') < 3
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Re-dispatch a fresh Pages run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n='${{ github.event.inputs.retry || 0 }}'
+          next=$((n + 1))
+          echo "::warning::Pages deploy failed (transient backend). Re-dispatching fresh run, attempt #$next of 3."
+          sleep 45
+          gh workflow run pages.yml -R "${{ github.repository }}" --ref main -f retry="$next"
