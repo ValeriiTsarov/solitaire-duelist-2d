@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 189 151" width="189" height="151">
+  <!-- Germany. Vector flag card: same 189×151 footprint + rounded corners as the pack PNGs (flag-en /
+       flag-uk), so the settings picker row stays uniform. See docs/design/country-flags-index.md. -->
+  <defs><clipPath id="c"><rect x="0" y="0" width="189" height="151" rx="14"/></clipPath></defs>
+  <g clip-path="url(#c)">
+    <rect x="0" y="0" width="189" height="50.34" fill="#000000"/>
+    <rect x="0" y="50.34" width="189" height="50.33" fill="#dd0000"/>
+    <rect x="0" y="100.67" width="189" height="50.33" fill="#ffce00"/>
+  </g>
+  <rect x="0.75" y="0.75" width="187.5" height="149.5" rx="14" fill="none" stroke="#1b2130" stroke-opacity="0.55" stroke-width="1.5"/>
+</svg>

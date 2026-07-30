@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 189 151" width="189" height="151">
+  <!-- Italy. Vector flag card, same 189×151 footprint + rounded corners as the pack PNGs. -->
+  <defs><clipPath id="c"><rect x="0" y="0" width="189" height="151" rx="14"/></clipPath></defs>
+  <g clip-path="url(#c)">
+    <rect x="0" y="0" width="63" height="151" fill="#008c45"/>
+    <rect x="63" y="0" width="63" height="151" fill="#f4f5f0"/>
+    <rect x="126" y="0" width="63" height="151" fill="#cd212a"/>
+  </g>
+  <rect x="0.75" y="0.75" width="187.5" height="149.5" rx="14" fill="none" stroke="#1b2130" stroke-opacity="0.55" stroke-width="1.5"/>
+</svg>

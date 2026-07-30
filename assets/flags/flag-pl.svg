@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 189 151" width="189" height="151">
+  <!-- Poland. Vector flag card, same 189×151 footprint + rounded corners as the pack PNGs. -->
+  <defs><clipPath id="c"><rect x="0" y="0" width="189" height="151" rx="14"/></clipPath></defs>
+  <g clip-path="url(#c)">
+    <rect x="0" y="0" width="189" height="75.5" fill="#ffffff"/>
+    <rect x="0" y="75.5" width="189" height="75.5" fill="#dc143c"/>
+  </g>
+  <rect x="0.75" y="0.75" width="187.5" height="149.5" rx="14" fill="none" stroke="#1b2130" stroke-opacity="0.55" stroke-width="1.5"/>
+</svg>
