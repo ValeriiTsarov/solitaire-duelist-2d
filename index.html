@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 <title>Nine to Wonderland</title>
 <link rel="icon" href="./favicon.ico" />
+<script>(function(){
+  function show(t){
+    var d = document.getElementById('bootErr');
+    if (!d) { d = document.createElement('div'); d.id = 'bootErr';
+      d.style.cssText = 'position:fixed;inset:0;z-index:99999;padding:12px;overflow:auto;background:#160c0c;color:#ff8a7a;font:12px/1.45 monospace;white-space:pre-wrap;word-break:break-word';
+      (document.body || document.documentElement).appendChild(d); }
+    d.textContent += t + '\n\n';
+  }
+  addEventListener('error', function(e){
+    show(e.message ? (e.message + '\n' + ((e.error && e.error.stack) || (e.filename + ':' + e.lineno))) : ('load failed: ' + (e.target && (e.target.src || e.target.href))));
+  }, true);
+  addEventListener('unhandledrejection', function(e){ show('unhandled rejection: ' + ((e.reason && (e.reason.stack || e.reason.message)) || e.reason)); });
+  setTimeout(function(){
+    if (document.querySelector('canvas')) return;
+    show('BOOT STALLED: no canvas after 8s\nstep: ' + (window.__boot || '(bundle never ran)') +
+         '\nphaser: ' + (typeof window.Phaser) + '  cgsdk: ' + (typeof window.CrazyGames) +
+         '\nua: ' + navigator.userAgent);
+  }, 8000);
+})();</script>
 <style>
   @font-face { font-family: 'Literata'; font-style: normal; font-weight: 400 700; font-display: block; src: url(./assets/fonts/literata-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
   @font-face { font-family: 'Literata'; font-style: normal; font-weight: 400 700; font-display: block; src: url(./assets/fonts/literata-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
@@ -15,13 +34,29 @@
      (body is overflow:hidden, so you cannot scroll to it). dvh tracks the VISIBLE viewport and fires a
      resize as the bar shows/hides, which Scale.FIT re-fits to. 100vh stays as the fallback for old UAs. */
   #game { width: 100vw; height: 100vh; height: 100dvh; }
+  /* Above the page background (z-index:-1 hid it BEHIND body's own background — invisible), so the
+     bundle removes the node once the game paints (game.ts, right after boot()). */
+  #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+             color: #8a7a5c; font: 32px system-ui, sans-serif; z-index: 0; }
   canvas { display: block; }
 </style>
 </head>
 <body>
+<div id="loading">Loading…</div>
 <div id="game"></div>
 <script src="./phaser.min.js"></script>
-<script type="module" src="./bundle.js"></script>
+<script>(function(){
+  var K='sd2d.boxreload';
+  function go(){var s=document.createElement('script');s.type='module';s.src='./bundle.js';document.body.appendChild(s);}
+  try{if(sessionStorage.getItem(K))return go();}catch(e){return go();}
+  var t0=Date.now(),last='';
+  (function tick(){
+    var p=(screen.height>screen.width||innerHeight>innerWidth)?'p':'l';
+    var sig=p+' '+innerWidth+'x'+innerHeight;
+    if(sig===last||Date.now()-t0>400){try{sessionStorage.setItem(K,p);}catch(e){}return go();}
+    last=sig;setTimeout(tick,100);
+  })();
+})();</script>
 
 </body>
 </html>
