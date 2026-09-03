@@ -14,7 +14,15 @@
     d.textContent += t + '\n\n';
   }
   addEventListener('error', function(e){
-    show(e.message ? (e.message + '\n' + ((e.error && e.error.stack) || (e.filename + ':' + e.lineno))) : ('load failed: ' + (e.target && (e.target.src || e.target.href))));
+    // A RESOURCE that failed to load (no .message) is only fatal during BOOT. Once the canvas is up, an
+    // optional script fetched on demand (the Ably SDK behind the Online button) can 404 and its caller
+    // already surfaces that itself — blanking a running game with the boot panel would be the real bug.
+    if (!e.message) {
+      if (document.querySelector('canvas')) return;
+      show('load failed: ' + (e.target && (e.target.src || e.target.href)));
+      return;
+    }
+    show(e.message + '\n' + ((e.error && e.error.stack) || (e.filename + ':' + e.lineno)));
   }, true);
   addEventListener('unhandledrejection', function(e){ show('unhandled rejection: ' + ((e.reason && (e.reason.stack || e.reason.message)) || e.reason)); });
   setTimeout(function(){
